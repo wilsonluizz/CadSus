@@ -1,4 +1,4 @@
-import   {React, useEffect} from 'react';
+import   {React, useEffect, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -7,11 +7,22 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Container from "@mui/material/Container";
+import { useParams } from "react-router-dom";
 
-export default function VisualizarRegistro(user) {
+export default function VisualizarRegistro({users}) {
+  
+  const { userId } = useParams();
+  const [user, setUser] = useState([])
+
   useEffect(() => {
-    console.log(user)
+    const idToFind = parseInt(userId, 10);
+
+    const foundUser = users.find((u) => u.id === idToFind);
+    
+    setUser(foundUser);
   }, [])
+
+
   return (
     <Container>
       <TableContainer component={Paper}>

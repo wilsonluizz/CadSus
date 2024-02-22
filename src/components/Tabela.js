@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,10 +10,13 @@ import Button from "@mui/material/Button";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Visibility } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import Container from "@mui/material/Container";
 
-export default function Tabela(users) {
+export default function Tabela({users}) {
+
+
   return (
-    <container>
+    <Container>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -26,7 +29,7 @@ export default function Tabela(users) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.users.map((user) => (
+            {users.map((user) => (
               <TableRow
                 key={user.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -47,6 +50,6 @@ export default function Tabela(users) {
           </TableBody>
         </Table>
       </TableContainer>
-    </container>
+    </Container>
   );
 }

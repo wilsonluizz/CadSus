@@ -6,10 +6,10 @@ import Container from "@mui/material/Container";
 import VisualizarRegistro from "./components/VisualizarRegistro";
 import { Component } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, {useState} from 'react'
 
-class App extends Component {
-  state = {
-    users: [
+export default function App () {
+    const [users, setUsers] = useState([
       {
         id: 1,
         nome: "Yuri Alberto",
@@ -55,30 +55,23 @@ class App extends Component {
         nomeMae: "Maria",
         endereco: "Rua 1",
       },
-    ],
-  };
+    ])
 
-  render() {
     return (
       <Router>
         <Container maxWidth="xl" className="App">
           <MenuLateral />
           <Routes>
-          <Route
-            path="/user/:userId"
-            render={(props) => {
-              const user = this.state.users.find(
-                (user) => user.id === props.match.params.userId
-              ); console.log(user);
-              return <VisualizarRegistro user={user} />;
-            }}
-          /> 
+            <Route 
+              path="/" 
+              element={<Tabela users={users}/>}
+                />
+            <Route
+              path="/user/:userId"
+              element={<VisualizarRegistro users={users} />}
+            />
           </Routes>
-          <Tabela users={this.state.users} />
         </Container>
       </Router>
     );
-  }
 }
-
-export default App;
