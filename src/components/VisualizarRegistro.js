@@ -1,62 +1,78 @@
-import   {React, useEffect, useState} from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Container from "@mui/material/Container";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Container, Card, CardContent, Typography, Button, Grid } from '@mui/material';
 
-export default function VisualizarRegistro({users}) {
-  
+const VisualizarRegistro = ({ users }) => {
   const { userId } = useParams();
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const idToFind = parseInt(userId, 10);
-
     const foundUser = users.find((u) => u.id === idToFind);
-    
     setUser(foundUser);
-  }, [])
+  }, [userId, users]);
 
+  if (!user) {
+    return <Container>Nenhum usuário encontrado.</Container>;
+  }
 
   return (
     <Container>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="right">Nome</TableCell>
-              <TableCell align="right">CPF</TableCell>
-              <TableCell align="right">CNS</TableCell>
-              <TableCell align="right">Dt, Nascimento</TableCell>
-              <TableCell align="right">Nome da Mãe</TableCell>
-              <TableCell align="right">Endereço</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-          <TableRow
-                key={user.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="user">
-                  {user.id}
-                </TableCell>
-                <TableCell align="right">{user.nome}</TableCell>
-                <TableCell align="right">{user.fat}</TableCell>
-                <TableCell align="right">{user.cpf}</TableCell>
-                <TableCell align="right">{user.cns}</TableCell>
-                <TableCell align="right">{user.nascimento}</TableCell>
-                <TableCell align="right">{user.nomeMae}</TableCell>
-                <TableCell align="right">{user.endereco}</TableCell>
-              </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Grid container spacing={3} justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <Card variant="outlined" style={{ backgroundColor: '#f5f5f5' }}>
+            <CardContent>
+              <Typography variant="h5" component="div" gutterBottom>
+                Detalhes do Registro
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>ID:</strong> {user.id}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Nome:</strong> {user.nome}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>CPF:</strong> {user.cpf}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>CNS:</strong> {user.cns}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Data de Nascimento:</strong> {user.nascimento}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Nome da Mãe:</strong> {user.nomeMae}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>CEP:</strong> {user.cep}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Logradouro:</strong> {user.logradouro}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Número:</strong> {user.numero}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Complemento:</strong> {user.complemento}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Bairro:</strong> {user.bairro}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Cidade:</strong> {user.cidade}
+              </Typography>
+              <Typography variant="body1" color="textPrimary">
+                <strong>Estado:</strong> {user.estado}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+      <Button component={Link} to="/" variant="contained" color="primary" style={{ marginTop: '16px' }}>
+        Voltar
+      </Button>
     </Container>
   );
-}
+};
+
+export default VisualizarRegistro;
