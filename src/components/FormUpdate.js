@@ -27,17 +27,19 @@ const UpdateForm = ({ users, setUsers, handleShowSuccessMessage }) => {
     cidade: "",
     estado: "",
   });
+  const [formChanged, setFormChanged] = useState(false);
 
   useEffect(() => {
     const userToUpdate = users.find((user) => user.id === Number(userId));
     if (userToUpdate) {
-      // Convertendo a data de nascimento para o formato esperado pelo TextField
-      const formattedDate = userToUpdate.nascimento ? new Date(userToUpdate.nascimento).toISOString().substr(0, 10) : "";
+      const formattedDate = userToUpdate.nascimento
+        ? new Date(userToUpdate.nascimento).toISOString().substr(0, 10)
+        : "";
       setFormData({
         nome: userToUpdate.nome,
         cpf: userToUpdate.cpf,
         cns: userToUpdate.cns.toString(),
-        nascimento: formattedDate, // Utilizando a data formatada
+        nascimento: formattedDate,
         nomeMae: userToUpdate.nomeMae,
         cep: userToUpdate.cep,
         logradouro: userToUpdate.logradouro,
@@ -49,55 +51,23 @@ const UpdateForm = ({ users, setUsers, handleShowSuccessMessage }) => {
       });
     }
   }, [users, userId]);
-  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    if (
-      (name === "cpf" && value.length > 14) ||
-      (name === "cns" && value.length > 15) ||
-      (name === "cep" && value.length > 8)
-    ) {
-      return;
-    }
-
-    if (
-      (name === "cpf" && /^\d{0,11}$/.test(value.replace(/\D/g, ""))) ||
-      (name === "cns" && /^\d{0,15}$/.test(value)) ||
-      (name === "cep" && /^\d{0,8}$/.test(value))
-    ) {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-
-      if (name === "cep" && value.length === 8) {
-        fetch(`https://viacep.com.br/ws/${value}/json/`)
-          .then((response) => response.json())
-          .then((data) => {
-            setFormData((prevData) => ({
-              ...prevData,
-              logradouro: data.logradouro || "",
-              complemento: data.complemento || "",
-              bairro: data.bairro || "",
-              cidade: data.localidade || "",
-              estado: data.uf || "",
-            }));
-          })
-          .catch((error) => {
-            console.error("Erro ao buscar o endereço:", error);
-          });
-      }
-    } else if (name !== "cpf" && name !== "cns" && name !== "cep") {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    setFormChanged(true); // Indica que o formulário foi alterado
   };
 
   const handleSubmit = () => {
+    if (!formChanged) {
+      // Se o formulário não foi alterado, exibe um alerta
+      alert("Nenhum dado foi alterado!");
+      return;
+    }
+
     const updatedUsers = users.map((user) =>
       user.id === Number(userId)
         ? {
@@ -166,7 +136,7 @@ const UpdateForm = ({ users, setUsers, handleShowSuccessMessage }) => {
             fullWidth
             label="Data de Nascimento"
             type="date"
-            name="dataNascimento" 
+            name="nascimento"
             value={formData.nascimento}
             onChange={handleChange}
             InputLabelProps={{ shrink: true }}

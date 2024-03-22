@@ -1,12 +1,33 @@
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Container, Button, Typography, Grid, TablePagination, Modal, Box } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Container,
+  Button,
+  Typography,
+  TablePagination,
+  Modal,
+  Box,
+  TextField
+} from "@mui/material";
 import { Link } from "react-router-dom";
+
+// Função para remover acentos e tornar a string minúscula
+const normalizeString = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+};
 
 export default function Tabela({ users, handleDelete }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(7);
   const [openModal, setOpenModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // Estado para armazenar o termo de pesquisa
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -35,8 +56,20 @@ export default function Tabela({ users, handleDelete }) {
   // Ordena os usuários em ordem decrescente com base no ID
   const sortedUsers = users.slice().sort((a, b) => b.id - a.id);
 
+  // Filtra os usuários com base no termo de pesquisa
+  const filteredUsers = sortedUsers.filter((user) =>
+    normalizeString(user.nome).includes(normalizeString(searchTerm))
+  );
+
   return (
     <Container>
+      <TextField
+        fullWidth
+        label="Pesquisar"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: '16px' }} 
+      />
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -51,8 +84,8 @@ export default function Tabela({ users, handleDelete }) {
           </TableHead>
           <TableBody>
             {(rowsPerPage > 0
-              ? sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : sortedUsers
+              ? filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : filteredUsers
             ).map((user) => (
               <TableRow
                 key={user.id}
@@ -60,13 +93,14 @@ export default function Tabela({ users, handleDelete }) {
               >
                 <TableCell align="right">{user.id}</TableCell>
                 <TableCell align="right">{user.nome}</TableCell>
-                <TableCell align="right">{user.cpf}</TableCell>
+                <TableCell align="right">{user.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}</TableCell>
+
                 <TableCell align="right">{user.nascimento}</TableCell>
                 <TableCell align="right">
                   {user.id && (
                     <span style={{ marginRight: "8px" }}>
                       <Link to={`/user/${user.id}`}>
-                        <Button variant="contained">Vesualizar</Button>
+                        <Button variant="contained">Visualizar</Button>
                       </Link>
                     </span>
                   )}
@@ -96,7 +130,7 @@ export default function Tabela({ users, handleDelete }) {
       <TablePagination
         rowsPerPageOptions={[7, 10, 25, 50, { label: "All", value: -1 }]}
         component="div"
-        count={users.length}
+        count={filteredUsers.length} // Usar o comprimento dos usuários filtrados
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

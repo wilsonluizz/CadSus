@@ -32,7 +32,7 @@ const VisualizarRegistro = ({ users }) => {
                 <strong>Nome:</strong> {user.nome}
               </Typography>
               <Typography variant="body1" color="textPrimary">
-                <strong>CPF:</strong> {user.cpf}
+                <strong>CPF:</strong> {user.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}
               </Typography>
               <Typography variant="body1" color="textPrimary">
                 <strong>CNS:</strong> {user.cns}
